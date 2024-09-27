@@ -1,7 +1,7 @@
 # KONAMID
 Konami (GB/GBC) to MIDI converter
 
-This tool converts music from Game Boy and Game Boy Color games using Konami's original sound engine to MIDI format.
+This tool converts music (and sound effects) from Game Boy and Game Boy Color games using Konami's original sound engine to MIDI format.
 It works with ROM images. To use it, you must specify the name of the ROM followed by the number of the bank containing the sound data (in hex).
 Two more optional parameters can also be used for when auto-detection fails: format (slightly different variations of the sequence format) and multi-bank method. For format, options 0-9 are available, with examples below:
 * 0 = Castlevania 1, Quarth, Skate or Die
