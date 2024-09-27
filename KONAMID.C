@@ -1131,7 +1131,15 @@ void song2mid(int songNum, long ptr)
 						}
 						else if (command[1] >= 0x80)
 						{
-							seqPos += 2;
+							if (format == 5 || format == 6 || format == 9)
+							{
+								seqPos += 2;
+							}
+							else
+							{
+								seqPos += 3;
+							}
+							
 						}
 						else if (command[1] == 0x00)
 						{
