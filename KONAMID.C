@@ -509,14 +509,14 @@ int main(int args, char* argv[])
 				{
 					i += 2;
 				}
-				if (tableOffset == 0x4000 || tableOffset == 0x4002)
-				{
-					i += 2;
-				}
 				songNum = 1;
 				while (ReadLE16(&romData[i]) > bankAmt)
 				{
 					songPtr = ReadLE16(&romData[i]);
+					if (songPtr == 0x4000 || songPtr == 0x4002)
+					{
+						i += 2;
+					}
 					if ((songPtr == 0x438C || songPtr == 0x47A6) && format == 9 && songNum == 1)
 					{
 						i += 2;
