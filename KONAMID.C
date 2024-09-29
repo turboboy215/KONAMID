@@ -505,7 +505,7 @@ int main(int args, char* argv[])
 					mb = mbMethod;
 				}
 				i = tableOffset - bankAmt;
-				if (ReadLE16(&romData[i]) > bankSize * 2 || ReadLE16(&romData[i]) < bankSize || format == 1 || format == 3)
+				if (ReadLE16(&romData[i]) >= bankSize * 2 || ReadLE16(&romData[i]) <= bankSize || format == 1 || format == 3)
 				{
 					i += 2;
 				}
