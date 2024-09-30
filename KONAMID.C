@@ -32,6 +32,9 @@ int fmtOverride = 0;
 int mbOverride = 0;
 int mbMethod = 0;
 int tempoCheck = 0;
+int cv2Fix = 0;
+int pdFix = 0;
+long tempLen = 0;
 
 unsigned static char* romData;
 unsigned static char* exBankData;
@@ -264,6 +267,10 @@ int main(int args, char* argv[])
 						}
 					}
 					foundTable = 1;
+					if (tableOffset == 0x4A79)
+					{
+						cv2Fix = 1;
+					}
 				}
 			}
 
@@ -474,6 +481,7 @@ int main(int args, char* argv[])
 					foundTable = 1;
 					format = 1;
 					mb = 1;
+					pdFix = 1;
 
 				}
 			}
@@ -1464,10 +1472,27 @@ void song2mid(int songNum, long ptr)
 					{
 						if (format < 3 || format == 7 || format == 8)
 						{
-							if (ReadLE16(&romData[seqPos - bankAmt + 1]) == 0xFFFF)
+							if (pdFix == 0)
 							{
-								seqEnd = 1;
+								if (mb == 0)
+								{
+									tempLen = ReadLE16(&romData[seqPos - bankAmt + 1]);
+								}
+								else if (mb > 0)
+								{
+									tempLen = ReadLE16(&exBankData[seqPos - bankAmt + 1]);
+								}
+								if (tempLen == 0xFFFF)
+								{
+									seqEnd = 1;
+								}
 							}
+							else if (pdFix == 1)
+							{
+								seqPos = jumpPosRet;
+							}
+
+
 
 							if (jumpPosRet != 0)
 							{
@@ -1545,13 +1570,149 @@ void song2mid(int songNum, long ptr)
 										seqPos = jumpPos;
 									}
 								}
+								
+								/*Fixed loop points for Castlevania 2*/
+								else if (format == 1 && cv2Fix == 1)
+								{
+									if (songNum == 84 && ptr == 0x4CC7)
+									{
+										seqPos = jumpPos;
+									}
+									else if (songNum == 86 && ptr == 0x4CEB)
+									{
+										if (jumpPos == 0x5739 || jumpPos == 0x5749 || jumpPos == 0x5752 || jumpPos == 0x5758 || jumpPos == 0x576A || jumpPos == 0x5779 || jumpPos == 0x5788 || jumpPos == 0x5797)
+										{
+											seqPos = jumpPos;
+										}
+										else
+										{
+											seqEnd = 1;
+										}
+									}
+									else if (songNum == 88 && ptr == 0x4D0F)
+									{
+										if (jumpPos == 0x60AA || jumpPos == 0x60C3 || jumpPos == 0x60D9 || jumpPos == 0x60EC || jumpPos == 0x60F7 || jumpPos == 0x610E || jumpPos == 0x61A3 || jumpPos == 0x61C0 || jumpPos == 0x61DD)
+										{
+											seqPos = jumpPos;
+										}
+										else
+										{
+											seqEnd = 1;
+										}
+									}
+									else if (songNum == 91 && ptr == 0x4D19)
+									{
+										if (jumpPos == 0x5A47 || jumpPos == 0x5A56 || jumpPos == 0x5A5F || jumpPos == 0x5A6F || jumpPos == 0x5A80 
+											|| jumpPos == 0x5A8E || jumpPos == 0x5A9F || jumpPos == 0x5AB3 || jumpPos == 0x5ABD || jumpPos == 0x5ACE || jumpPos == 0x5ADF 
+											|| jumpPos == 0x5AFA || jumpPos == 0x5B00 || jumpPos == 0x5B06 || jumpPos == 0x5B0C || jumpPos == 0x5B1C)
+										{
+											seqPos = jumpPos;
+										}
+										else
+										{
+											seqEnd = 1;
+										}
+									}
+									else if (songNum == 92 && ptr == 0x4D41)
+									{
+										if (jumpPos == 0x66D5 || jumpPos == 0x6724 || jumpPos == 0x6738 || jumpPos == 0x674F || jumpPos == 0x675F || jumpPos == 0x6771)
+										{
+											seqPos = jumpPos;
+										}
+										else
+										{
+											seqEnd = 1;
+										}
+									}
+									else if (songNum == 96 && ptr == 0x4D4B)
+									{
+										if (jumpPos == 0x6B4F || jumpPos == 0x6B54 || jumpPos == 0x6B76 || jumpPos == 0x6B4F || jumpPos == 0x6B54 || jumpPos == 0x6B7B || jumpPos == 0x6B95)
+										{
+											seqPos = jumpPos;
+										}
+										else if (jumpPos == 0x6CEF || jumpPos == 0x6D00 || jumpPos == 0x6CEF || jumpPos == 0x6D11 || jumpPos == 0x6CEF || jumpPos == 0x6D1A)
+										{
+											seqPos = jumpPos;
+										}
+										else if (jumpPos == 0x6B4F || jumpPos == 0x6B65 || jumpPos == 0x6B76 || jumpPos == 0x6B88 || jumpPos == 0x6B76 || jumpPos == 0x6BA3)
+										{
+											seqPos = jumpPos;
+										}
+										else
+										{
+											seqEnd = 1;
+										}
+									}
+									else if (songNum == 98 && ptr == 0x4D5F)
+									{
+										if (jumpPos == 0x70E0 || jumpPos == 0x710B || jumpPos == 0x7140 || jumpPos == 0x7222 || jumpPos == 0x719D || jumpPos == 0x7261 || jumpPos == 0x7166 || jumpPos == 0x7168 || jumpPos == 0x719B)
+										{
+											seqPos = jumpPos;
+										}
+										else
+										{
+											seqEnd = 1;
+										}
+									}
+									else if (songNum == 102 && ptr == 0x4D91)
+									{
+										seqPos = jumpPos;
+									}
+									else if (songNum == 105 && ptr == 0x4DA5)
+									{
+										if (jumpPos == 0x7B62 || jumpPos == 0x7B6E || jumpPos == 0x7B7A || jumpPos == 0x7B90 || jumpPos == 0x7B8D)
+										{
+											seqPos = jumpPos;
+										}
+										else
+										{
+											seqEnd = 1;
+										}
+									}
+									else if (songNum == 106 && ptr == 0x4DAF)
+									{
+										if (jumpPos == 0x7DBF || jumpPos == 0x7DE3 || jumpPos == 0x7DE5 || jumpPos == 0x7E30 || jumpPos == 0x7E4C || jumpPos == 0x7E6D)
+										{
+											seqPos = jumpPos;
+										}
+										else
+										{
+											seqEnd = 1;
+										}
+									}
+									else
+									{
+										seqEnd = 1;
+									}
+
+								}
+
+								/*Fix for Parodius last song end*/
+								else if (format == 1 && pdFix == 1)
+								{
+									if (songNum == 106 && ptr == 0x709B)
+									{
+										if (jumpPos == 0x7D09 || jumpPos == 0x7D8A || jumpPos == 0x7C28 || jumpPos == 0x7CAA || jumpPos == 0x7E10 || jumpPos == 0x7E5F || jumpPos == 0x7EB0 || jumpPos == 0x7BD9 || jumpPos == 0x7EBE)
+										{
+											seqPos = jumpPos;
+										}
+										else
+										{
+											seqEnd = 1;
+										}
+									}
+									else
+									{
+										seqEnd = 1;
+									}
+								}
 								else
 								{
 									seqEnd = 1;
 								}
+
 								
 							}
-
 
 							else
 							{
