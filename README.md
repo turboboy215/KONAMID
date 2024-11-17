@@ -72,6 +72,7 @@ Supported games:
   * Tiny Toon Adventures 2: Montana's Movie Madness
   * Track & Field
   * Woody Woodpecker Racing
+  * Yu-Gi-Oh!: Monster Capsule GB
   * Zen: Intergalactic Ninja
 
 ## To do:
